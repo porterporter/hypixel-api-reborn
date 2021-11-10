@@ -1591,6 +1591,7 @@ declare module 'hypixel-api-reborn' {
       xpNextLevel: number
     };
     levelFormatted: string;
+    levelFormattedColors: string;
     prestige: SKYWARS_PRESTIGE;
     prestigeIcon: SKYWARS_PRESTIGE_ICON;
     playedGames: number;
