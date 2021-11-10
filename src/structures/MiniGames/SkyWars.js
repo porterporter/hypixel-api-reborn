@@ -99,7 +99,7 @@ class SkyWars {
      * Formatted Level
      * @type {string}
      */
-    this._levelFormatted = data.levelFormatted ? (data.levelFormatted.replace(/§l/gm, '').replace(/§r/gm, '')) : null;
+    this.levelFormattedColors = data.levelFormatted ? (data.levelFormatted.replace(/§l/gm, '').replace(/§r/gm, '')) : null;
 
     /**
      * Prestige
