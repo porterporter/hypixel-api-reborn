@@ -19,7 +19,7 @@ class SkyWars {
    * @param {object} data SkyWars data
    * @param {object|null} extraRSWData Extra Ranked Skywars data, if any
    */
-  constructor (data, extraRSWData) {
+  constructor(data, extraRSWData) {
     /**
      * Coins
      * @type {number}
@@ -95,6 +95,12 @@ class SkyWars {
      * @type {string}
      */
     this.levelFormatted = data.levelFormatted ? (data.levelFormatted.replace(/§l/gm, '**').replace(/§([a-f]|[1-9])/gm, '').replace(/§r/gm, '')) : null;
+    /**
+     * Formatted Level
+     * @type {string}
+     */
+    this._levelFormatted = data.levelFormatted ? (data.levelFormatted.replace(/§l/gm, '').replace(/§r/gm, '')) : null;
+
     /**
      * Prestige
      * @type {SkyWarsPrestige}
@@ -357,7 +363,7 @@ module.exports = SkyWars;
  * @param {number} level
  * @return {string}
  */
-function getSkyWarsPrestige (level) {
+function getSkyWarsPrestige(level) {
   if (level >= 60) return 'Mythic';
   return ['Iron', 'Iron', 'Gold', 'Diamond', 'Emerald', 'Sapphire', 'Ruby', 'Crystal', 'Opal', 'Amethyst', 'Rainbow'][Math.floor(level / 5)] || 'Iron';
 }
@@ -365,7 +371,7 @@ function getSkyWarsPrestige (level) {
  * @param {number} xp
  * @return {number}
  */
-function getSkyWarsLevel (xp) {
+function getSkyWarsLevel(xp) {
   const totalXp = [0, 2, 7, 15, 25, 50, 100, 200, 350, 600, 1000, 1500];
   if (xp >= 15000) return Math.floor((xp - 15000) / 10000 + 12);
   const level = totalXp.findIndex((x) => x * 10 - xp > 0);
@@ -375,7 +381,7 @@ function getSkyWarsLevel (xp) {
  * @param {number} xp
  * @return {{xpToNextLevel:number,percent:number,xpNextLevel:number}}
  */
-function getSkyWarsLevelProgress (xp) {
+function getSkyWarsLevelProgress(xp) {
   const totalXp = [0, 2, 7, 15, 25, 50, 100, 200, 350, 600, 1000, 1500];
   const xpToNextLvl = [0, 2, 5, 8, 10, 25, 50, 100, 150, 250, 400, 500]; // * 10
   let percent;
@@ -421,7 +427,7 @@ const ratingRegex = /^SkyWars_skywars_rating_(\d{1,2})_(\d{1,2})_(position|ratin
  * @param {Object|null} extraRSWData extra data to be attached
  * @returns {SkywarsRankedStats} some map
  */
-function getRankedPositions (data, extraRSWData) {
+function getRankedPositions(data, extraRSWData) {
   const map = new Map();
   const keys = Object.keys(data).map((key) => key.match(ratingRegex)).filter((x) => x);
   for (const key of keys) {
@@ -449,7 +455,7 @@ class SkywarsPackages {
    * Constructor
    * @param {string[]} data data from API
    */
-  constructor (data) {
+  constructor(data) {
     // TODO : a lot more
     /**
      * Raw Packages, as received from the API
@@ -476,7 +482,7 @@ class SkywarsPackages {
    * Parses cages
    * @returns {string[]}
    */
-  _parseCages () {
+  _parseCages() {
     return this.rawPackages.map((pkg) => pkg.match(/^cage_([A-z]+)-cage$/)).filter((x) => x).map((x) => x[1].replace(/-[a-z]/g, (x) => x[1].toUpperCase()));
   }
 }
@@ -489,7 +495,7 @@ class SkywarsKit {
    * Constructor
    * @param {string} kit Kit
    */
-  constructor (kit) {
+  constructor(kit) {
     /**
      * Kit data
      * @private
@@ -528,7 +534,7 @@ class SkywarsKits {
    * Constructor
    * @param {SkywarsKit[]} kits Potential Kits
    */
-  constructor (kits) {
+  constructor(kits) {
     this.kits = kits.map((kit) => new SkywarsKit(kit)).filter((kit) => kit.isKit);
   }
   /**
@@ -537,7 +543,7 @@ class SkywarsKits {
    * @param {KitType} [type] Kits corresponding to this type
    * @returns {SkywarsKit[]}
    */
-  get (gameMode = '', type = '') {
+  get(gameMode = '', type = '') {
     return this.kits.filter((kit) => (kit.gameMode.startsWith(gameMode) && kit.kitType.startsWith(type)));
   }
 }
