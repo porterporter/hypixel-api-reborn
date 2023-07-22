@@ -49,7 +49,17 @@ class BedWars {
      * Level
      * @type {number}
      */
-    this.level = data.Experience ? getLevelForExp(data.Experience) : 0;
+    this.level = getLevelForExp(data.Experience);
+    /**
+     * Level Progress
+     * @type {LevelProgress}
+     */
+    this.levelProgress = getBedwarsLevelProgress(data.Experience);
+    /**
+      * Formatted Level
+      * @type {string}
+      */
+    this.levelFormatted = getPrestigeIcon(Math.floor(getLevelForExp(data.Experience)));
     /**
      * Experience
      * @type {number}
@@ -205,63 +215,75 @@ class BedWars {
 function getBedWarsPrestige (level) {
   // eslint-disable-next-line max-len
   if (level >= 5000) return 'Eternal';
+  // eslint-disable-next-line max-len
   return ['Stone', 'Iron', 'Gold', 'Diamond', 'Emerald', 'Sapphire', 'Ruby', 'Crystal', 'Opal', 'Amethyst', 'Rainbow', 'Iron Prime', 'Gold Prime', 'Diamond Prime', 'Emerald Prime', 'Sapphire Prime', 'Ruby Prime', 'Crystal Prime', 'Opal Prime', 'Amethyst Prime', 'Mirror', 'Light', 'Dawn', 'Dusk', 'Air', 'Wind', 'Nebula', 'Thunder', 'Earth', 'Water', 'Fire', 'Sunrise', 'Eclipse', 'Gamma', 'Majestic', 'Andesine', 'Marine', 'Element', 'Galaxy', 'Atomic', 'Sunset', 'Time', 'Winter', 'Obsidian', 'Spring', 'Ice', 'Summer', 'Spinel', 'Autumn', 'Mystic', 'Eternal'][Math.floor(level / 100)] || 'Eternal';
 }
-const EASY_LEVELS = 4;
-const EASY_LEVELS_XP = 7000;
-const XP_PER_PRESTIGE = 96 * 5000 + EASY_LEVELS_XP;
-const LEVELS_PER_PRESTIGE = 100;
-const HIGHEST_PRESTIGE = 10;
+/**
+ * @param {number} xp
+ * @return {{currentLevelXp:number,xpToNextLevel:number,percent:number,xpNextLevel:number,percentRemaining:number}}
+ */
+function getBedwarsLevelProgress(xp) {
+  const EASY_XP = [500, 1000, 2000, 3500];
+  const NORMAL_XP = 5000;
 
-/**
- * @param {number} level
- * @return {number}
- */
-function getExpForLevel (level) {
-  if (level === 0) return 0;
-  const respectedLevel = getLevelRespectingPrestige(level);
-  if (respectedLevel > EASY_LEVELS) return 5000;
-  switch (respectedLevel) {
-    case 1:
-      return 500;
-    case 2:
-      return 1000;
-    case 3:
-      return 2000;
-    case 4:
-      return 3500;
-  }
-  return 5000;
-}
-/**
- * @param {number} level
- * @return {number}
- */
-function getLevelRespectingPrestige (level) {
-  if (level > HIGHEST_PRESTIGE * LEVELS_PER_PRESTIGE) {
-    return level - HIGHEST_PRESTIGE * LEVELS_PER_PRESTIGE;
-  } else {
-    return level % LEVELS_PER_PRESTIGE;
-  }
-}
-/**
- * @param {number} exp
- * @return {number}
- */
-function getLevelForExp (exp) {
-  const prestiges = Math.floor(exp / XP_PER_PRESTIGE);
-  let level = prestiges * LEVELS_PER_PRESTIGE;
-  let expWithoutPrestiges = exp - (prestiges * XP_PER_PRESTIGE);
-
-  for (let i = 1; i <= EASY_LEVELS; ++i) {
-    const expForEasyLevel = getExpForLevel(i);
-    if (expWithoutPrestiges < expForEasyLevel) {
-      break;
+  let remainingXP = xp;
+  let lvl = 0;
+  let xpNextLevel = EASY_XP[0];
+  while (remainingXP > 0) {
+    xpNextLevel = NORMAL_XP;
+    if (lvl % 100 < 4) {
+      xpNextLevel = EASY_XP[lvl % 100];
     }
-    level++;
-    expWithoutPrestiges -= expForEasyLevel;
+    remainingXP -= xpNextLevel;
+    lvl++;
   }
-  return level + Math.floor(expWithoutPrestiges / 5000);
+  if (remainingXP === 0 && lvl === 0) return { level: 0, currentLevelXp: 0, xpToNextLevel: 500, xpNextLevel: 500, percent: 0, percentRemaining: 100 };
+  // const level = lvl + remainingXP / xpNextLevel;
+  const currentLevelXp = (remainingXP === 0) ? 0 : xpNextLevel - Math.abs(remainingXP);
+  const xpToNextLevel = Math.abs(remainingXP);
+  const percent = (currentLevelXp / xpNextLevel * 100).toFixed(2);
+  const percentRemaining = Math.round((100 - percent) * 100) / 100;
+
+  return { currentLevelXp, xpToNextLevel, percent, xpNextLevel, percentRemaining };
+}
+
+/**
+ * @param {number} xp
+ * @return {number}
+ */
+function getLevelForExp(xp) {
+  const EASY_XP = [500, 1000, 2000, 3500];
+  const NORMAL_XP = 5000;
+
+  let remainingXP = xp;
+  let lvl = 0;
+  let xpNextLevel = EASY_XP[0];
+  while (remainingXP > 0) {
+    xpNextLevel = NORMAL_XP;
+    if (lvl % 100 < 4) {
+      xpNextLevel = EASY_XP[lvl % 100];
+    }
+    remainingXP -= xpNextLevel;
+    lvl++;
+  }
+
+  return lvl + remainingXP / xpNextLevel;
+}
+/**
+ * @param {number} level
+ * @return {string}
+ */
+function getPrestigeIcon(level) {
+  const prestigeIcons = [
+    { level: 0, symbol: '✫' },
+    { level: 1100, symbol: '✪' },
+    { level: 2100, symbol: '⚝' }
+  ];
+
+  for (const element of prestigeIcons.slice().reverse()) {
+    if (element.level <= level) return `${level}${element.symbol}`;
+  }
+  return `${level}`;
 }
 /**
  * @typedef {string} BedWarsPrestige

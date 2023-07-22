@@ -12,7 +12,7 @@ export type GAME_ID = 2 | 3 | 4 | 5 | 6 | 7 | 13 | 14 | 17 | 20 | 21 | 23 | 24 |
 export type GAME_CODE = 'QUAKECRAFT' | 'WALLS' | 'PAINTBALL' | 'SURVIVAL_GAMES' | 'TNTGAMES' | 'VAMPIREZ' | 'WALLS3' | 'ARCADE' | 'UHC' | 'MCGO' | 'BATTLEGROUND' | 'SUPER_SMASH' | 'GINGERBREAD' | 'HOUSING' | 'SKYWARS' | 'TRUE_COMBAT' | 'SPEED_UHC' | 'SKYCLASH' | 'LEGACY' | 'PROTOTYPE' | 'BEDWARS' | 'MURDER_MYSTERY' | 'BUILD_BATTLE' | 'DUELS' | 'SKYBLOCK' | 'PIT' | 'REPLAY' | 'LIMBO' | 'IDLE' | 'QUEUE' | 'MAIN_LOBBY' | 'TOURNAMENT_LOBBY' | 'SMP';
 export type SKYWARS_PRESTIGE = 'Iron' | 'Gold' | 'Diamond' | 'Emerald' | 'Sapphire' | 'Ruby' | 'Crystal' | 'Opal' | 'Amethyst' | 'Rainbow' | 'Mythic';
 export type SKYWARS_PRESTIGE_ICON = '⋆' | '★' | '☆' | '⁕' | '✶' | '✳' | '✴' | '✷' | '❋' | '✼' | '❂' | '❁' | '☬' | '✙' | '❤️' | '☠' | '✦' | '✌' | '❦' | '✵' | '❣' | '☯' | '✺' | 'ಠ_ಠ' | '⚔';
-export type BEDWARS_PRESTIGE = 'Iron' | 'Gold' | 'Diamond' | 'Emerald' | 'Sapphire' | 'Ruby' | 'Crystal' | 'Opal' | 'Amethyst' | 'Rainbow' | 'Iron Prime' | 'Gold Prime' | 'Diamond Prime' | 'Emerald Prime' | 'Sapphire Prime' | 'Ruby Prime' | 'Crystal Prime' | 'Opal Prime' | 'Amethyst Prime' | 'Mirror' | 'Light' | 'Dawn' | 'Dusk' | 'Air' | 'Wind' | 'Nebula' | 'Thunder' | 'Earth' | 'Water' | 'Fire' |'Sunrise' | 'Eclipse' | 'Gamma' | 'Majestic' | 'Andesine' | 'Marine' | 'Element' | 'Galaxy' | 'Atomic' | 'Sunset' | 'Time' | 'Winter' | 'Obsidian' | 'Spring' | 'Ice' | 'Summer' | 'Spinel' | 'Autumn' | 'Mystic' | 'Eternal' ;
+export type BEDWARS_PRESTIGE = 'Iron' | 'Gold' | 'Diamond' | 'Emerald' | 'Sapphire' | 'Ruby' | 'Crystal' | 'Opal' | 'Amethyst' | 'Rainbow' | 'Iron Prime' | 'Gold Prime' | 'Diamond Prime' | 'Emerald Prime' | 'Sapphire Prime' | 'Ruby Prime' | 'Crystal Prime' | 'Opal Prime' | 'Amethyst Prime' | 'Mirror' | 'Light' | 'Dawn' | 'Dusk' | 'Air' | 'Wind' | 'Nebula' | 'Thunder' | 'Earth' | 'Water' | 'Fire' |'Sunrise' | 'Eclipse' | 'Gamma' | 'Majestic' | 'Andesine' | 'Marine' | 'Element' | 'Galaxy' | 'Atomic' | 'Sunset' | 'Time' | 'Winter' | 'Obsidian' | 'Spring' | 'Ice' | 'Summer' | 'Spinel' | 'Autumn' | 'Mystic' | 'Eternal';
 export type SkyblockRarity = 'VERY_SPECIAL' | 'SPECIAL' | 'SUPREME' | 'MYTHIC' | 'LEGENDARY' | 'EPIC' | 'RARE' | 'UNCOMMON' | 'COMMON';
 export type SOCIAL_MEDIA_ID = 'YOUTUBE' | 'DISCORD' | 'HYPIXEL' | 'TWITTER' | 'INSTAGRAM' | 'TWITCH';
 export type SKYWARS_KIT_TYPE = 'basic' | 'supporting' | 'mining' | 'defending' | 'attacking' | 'advanced' | 'enderchest';
@@ -1518,6 +1518,7 @@ declare module 'hypixel-api-reborn' {
       xpNextLevel: number;
     };
     levelFormatted: string;
+    levelFormattedColors: string;
     prestige: SKYWARS_PRESTIGE;
     prestigeIcon: SKYWARS_PRESTIGE_ICON;
     playedGames: number;
@@ -1681,8 +1682,15 @@ declare module 'hypixel-api-reborn' {
   class BedWars {
     constructor(data: Record<string, unknown>);
     coins: number;
-    level: number;
     experience: number;
+    level: number;
+    levelProgress: {
+      currentLevelXp: number,
+      xpToNextLevel: number,
+      percent: number,
+      xpNextLevel: number
+    };
+    levelFormatted: string;
     prestige: BEDWARS_PRESTIGE;
     playedGames: number;
     wins: number;
